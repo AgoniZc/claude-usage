@@ -1,0 +1,12 @@
+{
+  "name": "claude-usage",
+  "version": "1.0.0",
+  "description": "Track daily Claude Code usage statistics: tokens, code changes, interactions, files modified",
+  "type": "module",
+  "bin": {
+    "claude-usage": "./bin/cli.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
