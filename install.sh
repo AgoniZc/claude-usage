@@ -1,47 +1,32 @@
 #!/usr/bin/env bash
-# claude-usage skill installer — Claude Code / Codex / Cursor / generic agents
+# claude-usage skill installer for Claude Code
 set -euo pipefail
 
 SKILL_NAME="claude-usage"
 DEFAULT_REPO="https://github.com/AgoniZc/claude-usage.git"
 BRANCH="${CLAUDE_USAGE_BRANCH:-main}"
-INSTALL_CLAUDE=false
-INSTALL_CODEX=false
-INSTALL_CURSOR=false
-INSTALL_ALL=false
-CUSTOM_DIR=""
+INSTALL_DIR="${CLAUDE_USAGE_DIR:-$HOME/.claude/skills}"
 USE_LOCAL=false
 
 usage() {
   cat <<EOF
 Usage: install.sh [OPTIONS]
 
-Install claude-usage Agent Skill to your local skills directories.
+Install claude-usage Skill to Claude Code (~/.claude/skills/$SKILL_NAME).
 
 Options:
-  --all       Install to Claude Code, Codex, and Cursor (default if none specified)
-  --claude    Install to ~/.claude/skills/$SKILL_NAME
-  --codex     Install to ~/.codex/skills/$SKILL_NAME
-  --cursor    Install to ~/.cursor/skills/$SKILL_NAME
-  --dir PATH  Install to a custom skills subdirectory (e.g. Hermes: ~/.hermes/skills)
   --local     Copy from this script's directory instead of cloning from GitHub
   --repo URL  Git repo URL (default: $DEFAULT_REPO)
   -h, --help  Show this help
 
 Examples:
   curl -fsSL https://raw.githubusercontent.com/AgoniZc/claude-usage/main/install.sh | bash
-  ./install.sh --all --local
-  ./install.sh --dir ~/.hermes/skills
+  ./install.sh --local
 EOF
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --all) INSTALL_ALL=true; shift ;;
-    --claude) INSTALL_CLAUDE=true; shift ;;
-    --codex) INSTALL_CODEX=true; shift ;;
-    --cursor) INSTALL_CURSOR=true; shift ;;
-    --dir) CUSTOM_DIR="$2"; shift 2 ;;
     --local) USE_LOCAL=true; shift ;;
     --repo) DEFAULT_REPO="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
@@ -49,17 +34,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if ! $INSTALL_CLAUDE && ! $INSTALL_CODEX && ! $INSTALL_CURSOR && [[ -z "$CUSTOM_DIR" ]]; then
-  INSTALL_ALL=true
-fi
-
-if $INSTALL_ALL; then
-  INSTALL_CLAUDE=true
-  INSTALL_CODEX=true
-  INSTALL_CURSOR=true
-fi
-
-# Node.js check
 if ! command -v node >/dev/null 2>&1; then
   echo "Error: Node.js not found. Please install Node.js >= 18." >&2
   exit 1
@@ -92,31 +66,15 @@ else
   SRC_DIR="$WORK_DIR/$SKILL_NAME"
 fi
 
-install_one() {
-  local parent="$1"
-  local dest="$parent/$SKILL_NAME"
-  mkdir -p "$parent"
-  rm -rf "$dest"
-  mkdir -p "$dest"
-  cp -R "$SRC_DIR"/. "$dest/"
-  # Remove installer artifacts not needed in skill dir
-  rm -f "$dest/install.sh" "$dest/install.ps1" "$dest/.git" 2>/dev/null || true
-  echo "✓ Installed to $dest"
-}
+DEST="$INSTALL_DIR/$SKILL_NAME"
+mkdir -p "$INSTALL_DIR"
+rm -rf "$DEST"
+mkdir -p "$DEST"
+cp -R "$SRC_DIR"/. "$DEST/"
+rm -rf "$DEST/.git" 2>/dev/null || true
+rm -f "$DEST/install.sh" "$DEST/install.ps1" 2>/dev/null || true
 
-if $INSTALL_CLAUDE; then
-  install_one "$HOME/.claude/skills"
-fi
-if $INSTALL_CODEX; then
-  install_one "$HOME/.codex/skills"
-fi
-if $INSTALL_CURSOR; then
-  install_one "$HOME/.cursor/skills"
-fi
-if [[ -n "$CUSTOM_DIR" ]]; then
-  install_one "$CUSTOM_DIR"
-fi
-
+echo "✓ Installed to $DEST"
 echo ""
-echo "Done. Restart your agent (or start a new session) to load the skill."
-echo "Test: cd ~/.claude/skills/$SKILL_NAME && node bin/cli.js --today"
+echo "Done. Restart Claude Code (or start a new session) to load the skill."
+echo "Test: cd $DEST && node bin/cli.js --today"

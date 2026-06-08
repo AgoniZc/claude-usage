@@ -1,8 +1,8 @@
 # claude-usage
 
-Claude Code 每日使用统计 — **Agent Skill + CLI 工具**。
+Claude Code 每日使用统计 — **Skill + CLI 工具**。
 
-解析本地 `~/.claude/projects/` 会话 JSONL，汇总 token 用量、代码增删行数、交互次数、修改文件数。可安装到 Claude Code、Codex、Cursor、Hermes 等支持 Agent Skills 的平台，由 Agent 自动调用；也可单独当 CLI 使用。
+解析本地 `~/.claude/projects/` 会话 JSONL，汇总 token 用量、代码增删行数、交互次数、修改文件数。安装到 Claude Code 后，可直接用自然语言查询；也可单独当 CLI 使用。
 
 ## 特性
 
@@ -12,7 +12,7 @@ Claude Code 每日使用统计 — **Agent Skill + CLI 工具**。
 - 表格 / JSON 两种输出
 - 支持按模型细分 token
 
-## 作为 Agent Skill 安装（推荐）
+## 作为 Claude Code Skill 安装（推荐）
 
 ### 一行安装
 
@@ -28,12 +28,14 @@ curl -fsSL https://raw.githubusercontent.com/AgoniZc/claude-usage/main/install.s
 irm https://raw.githubusercontent.com/AgoniZc/claude-usage/main/install.ps1 | iex
 ```
 
+安装目标：`~/.claude/skills/claude-usage/`
+
 ### 从源码安装
 
 ```bash
 git clone https://github.com/AgoniZc/claude-usage.git
 cd claude-usage
-./install.sh --all --local
+./install.sh --local
 ```
 
 Windows：
@@ -41,36 +43,16 @@ Windows：
 ```powershell
 git clone https://github.com/AgoniZc/claude-usage.git
 cd claude-usage
-.\install.ps1 -All -Local
+.\install.ps1 -Local
 ```
 
-### 安装目标
-
-| 平台 | Skill 路径 |
-|------|------------|
-| Claude Code | `~/.claude/skills/claude-usage/` |
-| Codex CLI | `~/.codex/skills/claude-usage/` |
-| Cursor | `~/.cursor/skills/claude-usage/` |
-| 其他 Agent | `./install.sh --dir ~/.hermes/skills` 等 |
-
-安装完成后**重启 Agent 或新开 session**。之后可直接说：
+安装完成后**重启 Claude Code 或新开 session**。之后可直接说：
 
 - 「今天 Claude Code 用了多少 token？」
 - 「看下最近 7 天使用统计」
 - 「昨天改了多少行代码？」
 
-Agent 会匹配 `SKILL.md` 中的 trigger，运行 `node bin/cli.js` 并整理结果。
-
-### 安装选项
-
-```bash
-./install.sh --claude          # 仅 Claude Code
-./install.sh --codex           # 仅 Codex
-./install.sh --cursor          # 仅 Cursor
-./install.sh --all             # 三者都装（默认）
-./install.sh --dir ~/.hermes/skills   # 自定义 Agent
-./install.sh --repo https://github.com/AgoniZc/claude-usage.git
-```
+Claude Code 会匹配 `SKILL.md` 中的 trigger，运行 `node bin/cli.js` 并整理结果。
 
 ## 作为 CLI 直接使用
 
@@ -151,7 +133,7 @@ node bin/cli.js --help
 
 ```
 claude-usage/
-├── SKILL.md          # Agent Skill 定义（discovery + 工作流）
+├── SKILL.md          # Claude Code Skill 定义
 ├── README.md
 ├── install.sh        # macOS/Linux 安装脚本
 ├── install.ps1       # Windows 安装脚本

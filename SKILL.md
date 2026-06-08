@@ -5,13 +5,12 @@ description: >
   汇总 token 用量（输入/输出/缓存）、代码增删行数、交互次数、修改文件数。
   当用户问 Claude Code 用量、token 统计、今天/昨天用了多少、代码改了多少行、
   使用报告、usage stats、daily usage、Claude 用了多少 token 时使用。
-  跨 Claude Code / Codex CLI / Cursor / OpenCode / Hermes 等兼容 Agent Skills 的平台可用。
-  需要 Node.js >= 18，零 npm 依赖。
+  仅用于 Claude Code，需要 Node.js >= 18，零 npm 依赖。
 ---
 
 # Claude Usage Skill
 
-让 Agent 读取本机 Claude Code 会话日志，输出每日使用统计。数据来自 `~/.claude/projects/` 下的 JSONL 文件，不上传任何内容。
+Claude Code 专用 Skill：读取本机 Claude Code 会话日志，输出每日使用统计。数据来自 `~/.claude/projects/` 下的 JSONL 文件，不上传任何内容。
 
 ## 先决条件
 
@@ -26,7 +25,7 @@ node --version
 
 ## 执行方式
 
-**始终从 skill 根目录运行**（安装后路径示例：`~/.claude/skills/claude-usage`、`~/.codex/skills/claude-usage`、`~/.cursor/skills/claude-usage`）：
+**始终从 skill 根目录运行**（安装后路径：`~/.claude/skills/claude-usage`）：
 
 ```bash
 node bin/cli.js [选项]
@@ -94,7 +93,6 @@ node bin/cli.js --today --format json
 - 用中文回复（除非用户全程用英文）。
 - 先给**结论摘要**（今日 token、对话数、代码变更），再附 CLI 表格。
 - 用户问「是不是用太多了」时，结合 `--by-model` 或多日 `--last` 给趋势，不要臆造数据。
-- **不要**声称能统计 Cursor/Codex 自身用量——本 skill 只读 Claude Code 的 `~/.claude/projects/` 日志。
 
 ## 安装
 
@@ -104,4 +102,4 @@ node bin/cli.js --today --format json
 curl -fsSL https://raw.githubusercontent.com/AgoniZc/claude-usage/main/install.sh | bash
 ```
 
-安装后重启 Agent 或新开 session，skill 即可被 discovery 匹配。
+安装后重启 Claude Code 或新开 session，skill 即可被 discovery 匹配。
